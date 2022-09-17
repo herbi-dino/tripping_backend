@@ -1,9 +1,12 @@
 const express = require("express");
+
+const verifyToken = require("./verifyToken");
+
 const Book = require("../models/Book");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", verifyToken, (req, res) => {
   console.log(`[bookstore] book - getAll`);
 
   Book.find()
@@ -11,7 +14,7 @@ router.get("/", (req, res) => {
     .catch((err) => res.json(err));
 });
 
-router.post("/", (req, res) => {
+router.post("/", verifyToken, (req, res) => {
   console.log(`[bookstore] book - post: ${JSON.stringify(req.body)}`);
 
   const book = new Book({
@@ -28,7 +31,7 @@ router.post("/", (req, res) => {
     .catch((err) => res.json(err));
 });
 
-router.patch("/:bookId", (req, res) => {
+router.patch("/:bookId", verifyToken, (req, res) => {
   console.log(
     `[bookstore] book - update: ${req.params.bookId} - ${JSON.stringify(
       req.body
@@ -48,7 +51,7 @@ router.patch("/:bookId", (req, res) => {
     .catch((err) => res.json(err));
 });
 
-router.delete("/:bookId", (req, res) => {
+router.delete("/:bookId", verifyToken, (req, res) => {
   console.log(`[bookstore] book - delete: ${req.params.bookId}`);
 
   Book.deleteOne({ _id: req.params.bookId })
