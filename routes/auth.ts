@@ -1,16 +1,13 @@
-const express = require("express");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+import { compare, genSalt, hash } from "bcryptjs";
+import { Router } from "express";
+import { sign } from "jsonwebtoken";
 
-const { registerValidate, loginValidate } = require("../validator");
+import User from "../models/User";
+import { loginValidate, registerValidate } from "../validator";
 
-const User = require("../models/User");
+const authRoute = Router();
 
-require("dotenv/config");
-
-const router = express.Router();
-
-router.post("/register", async (req, res) => {
+authRoute.post("/register", async (req, res) => {
   console.log(`[bookstore] register: ${JSON.stringify(req.body)}`);
 
   const { error } = registerValidate(req.body);
@@ -18,8 +15,8 @@ router.post("/register", async (req, res) => {
     return res.status(400).json(error);
   }
 
-  const salt = await bcrypt.genSalt(10);
-  const hashedPw = await bcrypt.hash(req.body.password, salt);
+  const salt = await genSalt(10);
+  const hashedPw = await hash(req.body.password, salt);
 
   const user = new User({
     name: req.body.name,
@@ -33,7 +30,7 @@ router.post("/register", async (req, res) => {
     .catch((err) => res.json(err));
 });
 
-router.post("/login", async (req, res) => {
+authRoute.post("/login", async (req, res) => {
   console.log(`[bookstore] login: ${JSON.stringify(req.body)}`);
 
   const { error } = loginValidate(req.body);
@@ -46,14 +43,14 @@ router.post("/login", async (req, res) => {
     return res.send("account does not exist");
   }
 
-  const checkPw = await bcrypt.compare(req.body.password, accExists.password);
+  const checkPw = await compare(req.body.password, accExists.password);
   if (!checkPw) {
     return res.send("password is incorrect");
   }
 
-  const tk = jwt.sign({ _id: accExists._id }, process.env.JWT_TOKEN);
+  const tk = sign({ _id: accExists._id }, process.env["JWT_TOKEN"] || "");
 
   res.json({ token: tk });
 });
 
-module.exports = router;
+export default authRoute;

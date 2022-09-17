@@ -1,12 +1,11 @@
-const express = require("express");
+import { Router } from "express";
 
-const verifyToken = require("./verifyToken");
+import Book from "../models/Book";
+import verifyToken from "./verifyToken";
 
-const Book = require("../models/Book");
+const bookRoute = Router();
 
-const router = express.Router();
-
-router.get("/", verifyToken, (req, res) => {
+bookRoute.get("/", verifyToken, (req, res) => {
   console.log(`[bookstore] book - getAll`);
 
   Book.find()
@@ -14,7 +13,7 @@ router.get("/", verifyToken, (req, res) => {
     .catch((err) => res.json(err));
 });
 
-router.post("/", verifyToken, (req, res) => {
+bookRoute.post("/", verifyToken, (req, res) => {
   console.log(`[bookstore] book - post: ${JSON.stringify(req.body)}`);
 
   const book = new Book({
@@ -31,7 +30,7 @@ router.post("/", verifyToken, (req, res) => {
     .catch((err) => res.json(err));
 });
 
-router.patch("/:bookId", verifyToken, (req, res) => {
+bookRoute.patch("/:bookId", verifyToken, (req, res) => {
   console.log(
     `[bookstore] book - update: ${req.params.bookId} - ${JSON.stringify(
       req.body
@@ -51,7 +50,7 @@ router.patch("/:bookId", verifyToken, (req, res) => {
     .catch((err) => res.json(err));
 });
 
-router.delete("/:bookId", verifyToken, (req, res) => {
+bookRoute.delete("/:bookId", verifyToken, (req, res) => {
   console.log(`[bookstore] book - delete: ${req.params.bookId}`);
 
   Book.deleteOne({ _id: req.params.bookId })
@@ -59,4 +58,4 @@ router.delete("/:bookId", verifyToken, (req, res) => {
     .catch((err) => res.json(err));
 });
 
-module.exports = router;
+export default bookRoute;
