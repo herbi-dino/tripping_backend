@@ -3,7 +3,7 @@ import { Router } from "express";
 import { sign } from "jsonwebtoken";
 
 import User from "../models/User";
-import { loginValidate, registerValidate } from "../validator";
+import { loginValidate, registerValidate } from "../utils/validator";
 
 const authRoute = Router();
 
