@@ -18,11 +18,17 @@ app.use("/books", bookRoute);
 app.use("/auth", authRoute);
 
 const dbUri = process.env["DB_URI"]!;
-mongoose.connect(dbUri, () => {
-  console.log(`[bookstore] connected to db: ${dbUri}`);
+mongoose.connect(dbUri, (err) => {
+  if (err != null) {
+    console.log("[tripping] db connect failed:", err);
+
+    return;
+  }
+
+  console.log(`[tripping] connected to db: ${dbUri}`);
 });
 
 const port = process.env["PORT"]!;
 app.listen(port, () => {
-  console.log(`[bookstore] server up: ${port}`);
+  console.log(`[tripping] server up: ${port}`);
 });

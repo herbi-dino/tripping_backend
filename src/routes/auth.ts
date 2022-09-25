@@ -8,7 +8,7 @@ import { loginValidate, registerValidate } from "../utils/validator";
 const authRoute = Router();
 
 authRoute.post("/register", async (req, res) => {
-  console.log(`[bookstore] register: ${JSON.stringify(req.body)}`);
+  console.log(`[tripping] register: ${JSON.stringify(req.body)}`);
 
   const { error } = registerValidate(req.body);
   if (error != undefined) {
@@ -31,7 +31,7 @@ authRoute.post("/register", async (req, res) => {
 });
 
 authRoute.post("/login", async (req, res) => {
-  console.log(`[bookstore] login: ${JSON.stringify(req.body)}`);
+  console.log(`[tripping] login: ${JSON.stringify(req.body)}`);
 
   const { error } = loginValidate(req.body);
   if (error != undefined) {

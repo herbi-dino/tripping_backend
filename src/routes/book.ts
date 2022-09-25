@@ -6,7 +6,7 @@ import verifyToken from "./verifyToken";
 const bookRoute = Router();
 
 bookRoute.get("/", verifyToken, (req, res) => {
-  console.log(`[bookstore] book - getAll`);
+  console.log(`[tripping] book - getAll`);
 
   Book.find()
     .then((mgRes) => res.json(mgRes))
@@ -14,7 +14,7 @@ bookRoute.get("/", verifyToken, (req, res) => {
 });
 
 bookRoute.post("/", verifyToken, (req, res) => {
-  console.log(`[bookstore] book - post: ${JSON.stringify(req.body)}`);
+  console.log(`[tripping] book - post: ${JSON.stringify(req.body)}`);
 
   const book = new Book({
     title: req.body.title,
@@ -32,7 +32,7 @@ bookRoute.post("/", verifyToken, (req, res) => {
 
 bookRoute.patch("/:bookId", verifyToken, (req, res) => {
   console.log(
-    `[bookstore] book - update: ${req.params.bookId} - ${JSON.stringify(
+    `[tripping] book - update: ${req.params.bookId} - ${JSON.stringify(
       req.body
     )}`
   );
@@ -51,7 +51,7 @@ bookRoute.patch("/:bookId", verifyToken, (req, res) => {
 });
 
 bookRoute.delete("/:bookId", verifyToken, (req, res) => {
-  console.log(`[bookstore] book - delete: ${req.params.bookId}`);
+  console.log(`[tripping] book - delete: ${req.params.bookId}`);
 
   Book.deleteOne({ _id: req.params.bookId })
     .then((mgRes) => res.json(mgRes))

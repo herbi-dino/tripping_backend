@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { verify } from "jsonwebtoken";
 
 const verifyToken = function (req: Request, res: Response, next: Function) {
   const tk = req.header("auth-token");
@@ -7,6 +8,8 @@ const verifyToken = function (req: Request, res: Response, next: Function) {
   }
 
   try {
+    verify(tk, process.env["JWT_TOKEN"]!);
+
     next();
   } catch (err) {
     res.status(400).send("Invalid Token");
