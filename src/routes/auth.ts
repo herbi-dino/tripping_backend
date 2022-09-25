@@ -1,8 +1,8 @@
 import { compare, genSalt, hash } from "bcryptjs";
 import { Router } from "express";
-import { sign } from "jsonwebtoken";
 
 import User from "../models/User";
+import { generateToken } from "../utils/token";
 import { loginValidate, registerValidate } from "../utils/validator";
 
 const authRoute = Router();
@@ -48,9 +48,13 @@ authRoute.post("/login", async (req, res) => {
     return res.send("password is incorrect");
   }
 
-  const tk = sign({ _id: accExists._id }, process.env["JWT_TOKEN"] || "");
+  const tk = generateToken(accExists);
 
   res.json({ token: tk });
+});
+
+authRoute.post("/token", (req, res) => {
+  res.send("Developing...");
 });
 
 export default authRoute;

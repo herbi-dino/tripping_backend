@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import Book from "../models/Book";
-import verifyToken from "./verifyToken";
+import { verifyToken } from "../utils/token";
 
 const bookRoute = Router();
 
