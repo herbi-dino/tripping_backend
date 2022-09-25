@@ -4,7 +4,7 @@ import { failedResponse, successResponse } from "../models/MyResponse";
 import User from "../models/User";
 import { checkPassword, hashPassword } from "../utils/password";
 import { generateToken } from "../utils/token";
-import { loginValidate, signupValidate } from "../utils/validator";
+import { loginValidate, signupValidate } from "../utils/validators/auth";
 
 const authRoute = Router();
 
@@ -16,13 +16,13 @@ authRoute.post("/signup", async (req, res) => {
     return res.status(400).json(failedResponse(error.message));
   }
 
-  const user = new User({
-    name: req.body["name"],
-    email: req.body["email"],
-    password: await hashPassword(req.body["password"]),
-  });
-
   try {
+    const user = new User({
+      name: req.body["name"],
+      email: req.body["email"],
+      password: await hashPassword(req.body["password"]),
+    });
+
     await user.save();
 
     res.json(successResponse(user));
@@ -49,7 +49,7 @@ authRoute.post("/login", async (req, res) => {
     return res.status(400).json(failedResponse("Incorrect Password"));
   }
 
-  const tk = generateToken(accExists);
+  const tk = generateToken(accExists.toObject());
 
   res.json(successResponse({ token: tk }));
 });

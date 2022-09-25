@@ -22,10 +22,12 @@ const verifyToken = function (req: Request, res: Response, next: Function) {
 
 const generateToken = function (user: any) {
   const accessTk = sign(user, getConfig(accessTokenSecret), {
-    expiresIn: "15s",
+    expiresIn: "60s",
   });
 
-  const refreshTk = sign(user, getConfig(refreshTokenSecret));
+  const refreshTk = sign(user, getConfig(refreshTokenSecret), {
+    expiresIn: "180s",
+  });
 
   return { access: accessTk, refresh: refreshTk };
 };
