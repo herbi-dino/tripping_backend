@@ -1,15 +1,16 @@
 import mongoose from "mongoose";
 
 import getConfig, { databaseUri } from "./config";
+import log from "./logger";
 
 const initDatabase = function () {
   mongoose.connect(getConfig(databaseUri), (err) => {
     if (!err) {
-      console.log("[tripping] connect db: success -", getConfig(databaseUri));
+      log("connect db: success", getConfig(databaseUri));
       return;
     }
 
-    console.log("[tripping] connect db: failed -", err);
+    log("connect db: failed", err);
   });
 };
 

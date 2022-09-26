@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import { failedResponse, successResponse } from "../models/MyResponse";
 import User from "../models/User";
+import log from "../utils/logger";
 import { checkPassword, hashPassword } from "../utils/password";
 import { generateToken } from "../utils/token";
 import { loginValidate, signupValidate } from "../utils/validators/auth";
@@ -9,7 +10,7 @@ import { loginValidate, signupValidate } from "../utils/validators/auth";
 const authRoute = Router();
 
 authRoute.post("/signup", async (req, res) => {
-  console.log("[tripping] signup:", req.body);
+  log("signup", req.body);
 
   const { error } = signupValidate(req.body);
   if (error) {
@@ -17,22 +18,23 @@ authRoute.post("/signup", async (req, res) => {
   }
 
   try {
-    const user = new User({
+    const usrModel = new User({
       name: req.body["name"],
       email: req.body["email"],
       password: await hashPassword(req.body["password"]),
     });
 
-    await user.save();
+    const usr = await usrModel.save();
+    const tk = generateToken(usr.toObject());
 
-    res.json(successResponse(user));
+    res.json(successResponse({ token: tk }));
   } catch (err: any) {
     res.status(500).json(failedResponse(err["message"]));
   }
 });
 
 authRoute.post("/login", async (req, res) => {
-  console.log("[tripping] login:", req.body);
+  log("login", req.body);
 
   const { error } = loginValidate(req.body);
   if (error) {

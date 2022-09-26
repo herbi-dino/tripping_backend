@@ -2,13 +2,15 @@ import { Router } from "express";
 
 import { failedResponse, successResponse } from "../models/MyResponse";
 import Trip from "../models/Trip";
+import User from "../models/User";
+import log from "../utils/logger";
 import { verifyToken } from "../utils/token";
 import { createTripValidate } from "../utils/validators/trip";
 
 const tripRoute = Router();
 
 tripRoute.put("/", verifyToken, async (req, res) => {
-  console.log("[tripping] create trip:", req.body);
+  log("create trip", req.body);
 
   const { error } = createTripValidate(req.body);
   if (error) {
@@ -16,7 +18,7 @@ tripRoute.put("/", verifyToken, async (req, res) => {
   }
 
   try {
-    const trip = new Trip({
+    const tripModel = new Trip({
       owner: req.body["owner"],
       title: req.body["title"],
       location: req.body["location"],
@@ -26,14 +28,14 @@ tripRoute.put("/", verifyToken, async (req, res) => {
       transport: req.body["transport"],
     });
 
-    // const [tripRes, owner] = await Promise.all([
-    //   trip.save(),
-    //   User.findOne({ _id: trip.owner }),
-    // ]);
+    const trip = await tripModel.save();
 
-    const tripRes = await trip.save();
+    await User.findOneAndUpdate(
+      { email: trip.owner },
+      { $push: { trips: trip.id } }
+    );
 
-    res.json(successResponse(tripRes));
+    res.json(successResponse(trip));
   } catch (err: any) {
     res.status(500).json(failedResponse(err["message"]));
   }
